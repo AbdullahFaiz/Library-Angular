@@ -4,6 +4,8 @@ import { Book } from '../models/book.model';
 import Swal from 'sweetalert2';
 import { BookService } from '../services/book.service';
 import { Router } from '@angular/router';
+import { AuthorService } from '../services/author.service';
+import { Author } from '../models/author.model';
 @Component({
   selector: 'app-book',
   templateUrl: './book.component.html',
@@ -12,9 +14,16 @@ import { Router } from '@angular/router';
 export class BookComponent {
   constructor(
     private bookService: BookService,
-    private router: Router) {}
+    private authorService: AuthorService,
+    private router: Router,) {}
+
+  authorList:Author[] = [];
+  tempauthorList:Author[] = [];
 
   bookList:Book[] = [];
+  page = 0;
+  size = 10;
+  totalPages = 0;
   tempbookList:Book[] = [];
   bookDelete : any;
 
@@ -23,53 +32,78 @@ export class BookComponent {
   view : String = "default";
   ngOnInit() {
     this.initForm();
-
+    this.getAllAuthor();
     this.getAllBook();
   }
 
    //Initialize the Add Form
    private initForm(){
     this.bookAddForm = new FormGroup({
-      'firstName'  : new FormControl(null, Validators.required),
-      'lastName'  : new FormControl(null, Validators.required)
+      'name'  : new FormControl(null, Validators.required),
+      'isbn'  : new FormControl(null, Validators.required),
+      'author'  : new FormControl(null, Validators.required)
     });
 
     this.bookEditForm = new FormGroup({
       'bookId'  : new FormControl(null, Validators.required),
-      'firstName'  : new FormControl(null, Validators.required),
-      'lastName'  : new FormControl(null, Validators.required)
+      'name'  : new FormControl(null, Validators.required),
+      'isbn'  : new FormControl(null, Validators.required),
+      'author'  : new FormControl(null, Validators.required)
     });
   }
 
-  //get all Book
-  getAllBook(){
-    this.bookService.getAllBook().subscribe((data: Book[]) => {
-      this.bookList  = [];
-      this.tempbookList  = [];
+  //get all Author
+  getAllAuthor(){
+    this.authorService.getAllAuthor().subscribe((data: Author[]) => {
+      this.authorList  = [];
+      this.tempauthorList  = [];
 
       setTimeout(() => {}, 1500);
-      this.bookList  = data;
-      this.tempbookList  = data;
+      this.authorList  = data;
+      this.tempauthorList  = data;
 
-      console.log("this.bookList");
-      console.log(this.bookList);
-      console.log("this.bookList");
+      console.log("this.authorList");
+      console.log(this.authorList);
+      console.log("this.authorList");
 
     })
+  }
+  //get all Book
+  getAllBook(){
+    this.bookService.getAllBook(this.page, this.size).subscribe((data: any) => {
+      this.bookList = data.content;
+      this.totalPages = data.totalPages;
+    });
+  }
+
+  nextPage(): void {
+    if (this.page < this.totalPages - 1) {
+      this.page++;
+      this.getAllBook();
+    }
+  }
+
+  previousPage(): void {
+    if (this.page > 0) {
+      this.page--;
+      this.getAllBook();
+    }
   }
 
   create(){
     let formData = new FormData();
     let data : object;
     data = {
-      'firstName'             :  this.bookAddForm.value.firstName,
-      'lastName'      :  this.bookAddForm.value.lastName
+      'name'             :  this.bookAddForm.value.name,
+      'isbn'      :  this.bookAddForm.value.isbn,
+      'author'      :  {'authorId':this.bookAddForm.value.author}
     }
     console.log(data);
     if(this.bookAddForm.valid){
       data = {
-        'firstName'             :  this.bookAddForm.value.firstName,
-        'lastName'      :  this.bookAddForm.value.lastName
+        'name'             :  this.bookAddForm.value.name,
+        'isbn'      :  this.bookAddForm.value.isbn,
+        'author'      :  {'authorId':this.bookAddForm.value.author}
       }
 
       this.bookService.create(data).subscribe((response) => {
@@ -110,8 +144,9 @@ export class BookComponent {
     if(this.bookEditForm.valid){
       data = {
         'bookId'  :  this.bookEditForm.value.bookId,
-        'firstName'           :  this.bookEditForm.value.firstName,
-        'lastName'           :  this.bookEditForm.value.lastName
+        'name'             :  this.bookEditForm.value.name,
+        'isbn'      :  this.bookEditForm.value.isbn,
+        'author'      :  {'authorId':this.bookEditForm.value.author}
       }
 
 
@@ -175,8 +210,9 @@ export class BookComponent {
       this.bookEditForm.patchValue({
 
         'bookId'  : data.bookId,
-        'firstName'  : data.firstName,
-        'lastName'  : data.lastName
+        'name'  : data.name,
+        'isbn'  : data.isbn,
+        'author' : data.author.authorId
 
       });
     }else if(this.view === 'delete'){

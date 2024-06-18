@@ -15,8 +15,9 @@
                   <table class="table">
                       <thead>
                           <tr>
-                              <th scope="col">FirstName</th>
-                              <th scope="col">LastName</th>
+                              <th scope="col">Name</th>
+                              <th scope="col">ISBN</th>
+                              <th scope="col">Author</th>
                               <th scope="col">Action</th>
                           </tr>
                       </thead>
@@ -24,7 +25,7 @@
                           <tr *ngFor="let row of bookList">
                               <td>{{row.name}}</td>
                               <td>{{row.isbn}}</td>
-                              <td>{{row.author.firstName}} + {{row.author.lastName}}</td>
+                              <td>{{row.author.firstName}} {{row.author.lastName}}</td>
                               <td>
                                   <button class="btn btn-sm btn-outline-warning mr-2" style="margin-right: 10px;" (click)="changeView('edit',row)">Edit</button>
                                   <!-- <button class="btn btn-sm btn-outline-danger" (click)='changeView("delete",row)'>Delete</button> -->
@@ -33,6 +34,10 @@
                           </tr>
                       </tbody>
                   </table>
+                  <div class="pagination-controls">
+                    <button (click)="previousPage()" class="btn btn-outline-secondary" [disabled]="page === 0">Previous</button>
+                    <button (click)="nextPage()" class="btn btn-outline-primary"  [disabled]="page === totalPages - 1">Next</button>
+                  </div>
               </div>
           </div>
       </div>
@@ -55,17 +60,28 @@
                           <div class="row">
                               <div class="col-sm-6">
                                   <div class="form-group">
-                                      <label class="label">FirstName</label>
-                                      <input type="text" class="form-control" id="FirstName" placeholder="FirstName" formControlName="firstName">
+                                      <label class="label">Name</label>
+                                      <input type="text" class="form-control" id="FirstName" placeholder="Name" formControlName="name">
                                   </div>
                               </div>
                               <div class="col-sm-6">
                                   <div class="form-group">
 
-                                      <label class="label">Description</label>
-                                      <input type="text" class="form-control" placeholder="LastName" formControlName="lastName">
+                                      <label class="label">ISBN</label>
+                                      <input type="text" class="form-control" placeholder="ISBN" formControlName="isbn">
                                   </div>
                               </div>
+
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                  <label class="label">Author</label>
+                                  <select class="form-control" selected="1" formControlName="author">
+                                      <option value="1" disabled="disabled"> -select- </option>
+                                      <option *ngFor="let author of authorList" value="{{author.authorId}}">{{author.firstName}} {{author.lastName}}</option>
+
+                                  </select>
+                              </div>
+                          </div>
 
                           </div>
 
@@ -95,19 +111,30 @@
                       <form class="form-sample" [formGroup]="bookEditForm">
 
                           <div class="row">
-                              <div class="col-sm-6">
-                                  <div class="form-group">
-                                      <label class="label">FirstName</label>
-                                      <input type="text"  class="form-control" id="code" placeholder="FirstName" formControlName="firstName">
-                                  </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                  <label class="label">Name</label>
+                                  <input type="text" class="form-control" id="FirstName" placeholder="Name" formControlName="name">
                               </div>
-                              <div class="col-sm-6">
-                                  <div class="form-group">
+                          </div>
+                          <div class="col-sm-6">
+                              <div class="form-group">
 
-                                      <label class="label">LastName</label>
-                                      <input type="text" class="form-control" placeholder="LastName" formControlName="lastName">
-                                  </div>
+                                  <label class="label">ISBN</label>
+                                  <input type="text" class="form-control" placeholder="ISBN" formControlName="isbn">
                               </div>
+                          </div>
+
+                        <div class="col-sm-6">
+                          <div class="form-group">
+                              <label class="label">Author</label>
+                              <select class="form-control" selected="1" formControlName="author">
+                                  <option value="1" disabled="disabled"> -select- </option>
+                                  <option *ngFor="let author of authorList" value="{{author.authorId}}">{{author.firstName}} {{author.lastName}}</option>
+
+                              </select>
+                          </div>
+                      </div>
 
                           </div>
 

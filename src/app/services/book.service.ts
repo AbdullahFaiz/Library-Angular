@@ -1,7 +1,7 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 import { Book } from '../models/book.model';
 
@@ -54,11 +54,10 @@ delete(bookId : any){
     );
 }
 
-getAllBook() {
-    return this.httpClient.get<Book[]>(this.apiUrl, this.httpOptions)
-        .pipe(
-            catchError(this.handleError)
-        );
+getAllBook(page: number = 0, size: number = 10): Observable<any> {
+  const params = new HttpParams()
+    .set('page', page.toString())
+    .set('size', size.toString());
+  return this.httpClient.get<any>(this.apiUrl, { params });
 }
-
 }
