@@ -12,13 +12,16 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { BookComponent } from './book/book.component';
+import { HomeComponent } from './home/home.component';
+import { MatCardModule } from '@angular/material/card';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     AuthorComponent,
-    BookComponent
+    BookComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -30,6 +33,7 @@ import { BookComponent } from './book/book.component';
     MatToolbarModule,
     MatSidenavModule,
     MatListModule,
+    MatCardModule,
     AppRoutingModule
   ],
   providers: [

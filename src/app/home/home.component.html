@@ -1,0 +1,27 @@
+<div class="book-grid">
+  <mat-card class="book-card" *ngFor="let book of books" (click)="selectBook(book)">
+    <mat-card-header>
+      <div mat-card-avatar class="book-image">
+        <mat-icon>book</mat-icon>
+      </div>
+      <mat-card-title>{{ book.name }}</mat-card-title>
+      <mat-card-subtitle>{{ book.author.firstName }} {{ book.author.lastName }}</mat-card-subtitle>
+    </mat-card-header>
+  </mat-card>
+</div>
+
+<ng-container *ngIf="selectedBook">
+  <div class="popup-overlay"></div>
+  <div class="popup-container">
+    <div class="popup-header">
+      <h2>{{ selectedBook.name }}</h2>
+      <button mat-icon-button (click)="closePopup()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div class="popup-body">
+      <p>ISBN: {{ selectedBook.isbn }}</p>
+      <p>Author: {{ selectedBook.author.firstName }} {{ selectedBook.author.lastName }}</p>
+    </div>
+  </div>
+</ng-container>
